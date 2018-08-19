@@ -1,7 +1,5 @@
 import cireng
 
-
-
 cireng.setSource("dt/2")
 chdata = cireng.getData()
 chname = cireng.listCh()
@@ -15,12 +13,7 @@ input2 = cireng.mtgIn2(montages[0])
 idx1 = cireng.chIdx(input1,chname)
 idx2 = cireng.chIdx(input2,chname)
 bip=cireng.diffamp(chdata[idx1],chdata[idx2])
-
 #get event in montage 0	
 eventlist = cireng.evntListonMotages(lblsection[4],lblsection[5],0)
-
-
-#https://cbrnr.github.io/2017/10/23/loading-eeg-data/
-
-
-plt.plot(raw._data[-1])
+#plotting data
+cireng.plotCh(input1+"-"+input2,bip,eventlist)
