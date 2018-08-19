@@ -1,14 +1,24 @@
-from datetime import date
-import matplotlib.pyplot as plt
-import mne
+import cireng
 
-raw = mne.io.read_raw_edf("sample-data/00000258_s002_t000.edf", preload=True)
-raw.info
-raw.info["sfreq"]
-print raw.info["ch_names"]
-date.fromtimestamp(raw.info["meas_date"])
 
-print mne.channels.get_builtin_montages()
+
+cireng.setSource("dt/2")
+chdata = cireng.getData()
+chname = cireng.listCh()
+labelfile=cireng.readlbl()
+lblsection=cireng.lblSection(labelfile)
+montages=cireng.mtgList(lblsection[1])
+#select 1 montages for example
+label = cireng.mtgLbl(montages[0])
+input1 = cireng.mtgIn1(montages[0])
+input2 = cireng.mtgIn2(montages[0])
+idx1 = cireng.chIdx(input1,chname)
+idx2 = cireng.chIdx(input2,chname)
+bip=cireng.diffamp(chdata[idx1],chdata[idx2])
+
+#get event in montage 0	
+eventlist = cireng.evntListonMotages(lblsection[4],lblsection[5],0)
+
 
 #https://cbrnr.github.io/2017/10/23/loading-eeg-data/
 

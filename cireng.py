@@ -18,7 +18,6 @@ def setSource(filepath):
 	global raw
 	global f
 	sf = filepath
-	#raw = mne.io.read_raw_edf(filepath, preload=True)
 	f = pyedflib.EdfReader(sf+".edf")
 	return sf
 	
@@ -45,7 +44,6 @@ def infoData():
 
 def plotCh(sinyal):
 	plt.plot(sinyal)
-	plt.plot(3000,0, color="green", linewidth=1.0, linestyle="-")
 	plt.ylabel('microVolts')
 	plt.xlabel('ms')
 	plt.title('Judul')
@@ -58,17 +56,12 @@ def addEvent(x1,x2):
 
 def diffamp(a,b):
 	#the differential amplifier
-	c = a
+	c = []
 	for i in range(0,len(a)):
-		print "a: "+str(a[i])+", b: "+str(b[i])
 		if a[i] == b[i]:
-			c[i]=0
-			print "nolkan index ke"+str(i)
-			print c[i]
+			c.append(0)
 		else:
-			c[i]=max(a[i],b[i])
-			print "maksimalkan indek ke"+str(i)
-			print c[i]
+			c.append(max(a[i],b[i]))
 	return c
 
 def readlbl():
@@ -94,7 +87,7 @@ def mtgIn1(montage):
 	input1 = montage.split(",")[1].split(":")[1].split("--")[0].strip()
 	return input1
 
-def mtgIn2():
+def mtgIn2(montage):
 	input2 = montage.split(",")[1].split(":")[1].split("--")[1].strip()
 	return input2
 
@@ -102,13 +95,32 @@ def evntList(rawevents):
 	events = re.split(r'\n',rawevents)
 	return events
 	
+def evntListonMotages(rawsymbols,rawevents,idxmontages):
+	events = evntList(rawevents)
+	temp = []
+	for event in events:
+		if event != "":
+			if evntMtg(event) == idxmontages:
+				evid = evntId(event)
+				evname = getEvntName(evid,rawsymbols)
+				estrart = eventStart(event)
+				estop = eventStop(event)
+				temp.append(evname+","+str(estrart)+","+str(estop))
+	return temp
+	
 def evntMtg(event):
-	return event.split("=")[1].split(",")[4].strip()
+	idxmtg= event.split("=")[1].split(",")[4].strip()
+	return int(idxmtg)
 	
 def evntId(event):
 	ngok = event.split("=")[1].split("[")[1].split("]")[0].split(",")
 	for index, item in enumerate(ngok):
 		if item.strip() == "1.0":
+			return index
+
+def chIdx(inputch,chname):
+	for index, item in enumerate(chname):
+		if item.strip() == inputch:
 			return index
 	
 def eventStart(event):
