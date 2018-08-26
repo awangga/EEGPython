@@ -76,6 +76,14 @@ def diffamp(a,b):
 			c.append(max(a[i],b[i]))
 	return c
 
+def diffampDefault(a,b):
+	#the differential amplifier
+	c = []
+	for i in range(0,len(a)):
+		sgnl = a[i]-b[i]
+		c.append(sgnl)
+	return c
+
 def evntListonMotages(rawsymbols,rawevents,idxmontages):
 	events = evntList(rawevents)
 	temp = []
@@ -92,12 +100,15 @@ def evntListonMotages(rawsymbols,rawevents,idxmontages):
 def plotCh(Title,sinyal,eventlist):
 	for event in eventlist:
 		ev=event.split(",")
-		plt.plot([float(ev[1]),float(ev[2])],[0,0], label=ev[0])
-	plt.plot(sinyal)
+		plt.plot([float(ev[1])*1000,float(ev[2])*1000],[min(sinyal),min(sinyal)])
+		plt.plot([float(ev[1])*1000,float(ev[2])*1000],[max(sinyal),max(sinyal)], label=ev[0])
+		plt.plot([float(ev[1])*1000,float(ev[1])*1000],[min(sinyal),max(sinyal)])
+		plt.plot([float(ev[2])*1000,float(ev[2])*1000],[min(sinyal),max(sinyal)])
+	plt.plot(np.arange(0,len(sinyal)*getPeriod()[0],getPeriod()[0]),sinyal)
 	plt.ylabel('microVolts')
 	plt.xlabel('ms')
 	plt.title(Title)
-	plt.axis([0, len(sinyal), min(sinyal), max(sinyal)])
+	plt.axis([0-1000, len(sinyal)*getPeriod()[0]+1000, min(sinyal)-50, max(sinyal)+50])
 	plt.legend()
 	plt.show()
 	
@@ -130,3 +141,18 @@ def infoData():
 	infodt = "Channel : "+str(len(sigbufs))+"; Time(ms) : "+str(len(sigbufs[0]))
 	return infodt
 	
+def getSFreq():
+	global f
+	return f.getSampleFrequencies()
+
+def getSFreqOf(ch):
+	global f
+	return f.samplefrequency(ch)
+	
+def getDuration():
+	global f
+	return f.file_duration
+
+def getPeriod():
+	global f
+	return 1000.0/f.getSampleFrequencies()

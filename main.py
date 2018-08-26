@@ -12,7 +12,7 @@ input1 = cireng.mtgIn1(montages[0])
 input2 = cireng.mtgIn2(montages[0])
 idx1 = cireng.chIdx(input1,chname)
 idx2 = cireng.chIdx(input2,chname)
-bip=cireng.diffamp(chdata[idx1],chdata[idx2])
+bip=cireng.diffampDefault(chdata[idx1],chdata[idx2])
 #get event in montage 0	
 eventlist = cireng.evntListonMotages(lblsection[4],lblsection[5],0)
 #plotting data
